@@ -51,4 +51,4 @@ app.get('/collections/:collectionName', function(req, res, next) {
             })
           })
 
-          app.listen(3000)
+          app.listen(process.argv[2])
