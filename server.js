@@ -6,6 +6,9 @@ var express = require('express')
 var app = express()
 app.use(bodyParser())
 
+var mongoskin = require('mongoskin')
+var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
+
 app.param('collectionName', function(req, res, next, collectionName){
   req.collection = db.collection(collectionName)
   next()
