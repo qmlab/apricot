@@ -1,7 +1,7 @@
 var mongoskin = require('mongoskin')
 var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
 
-module.exports.insert = function(req, res, next) {
+module.exports.insertDocs = function(req, res, next) {
   req.collection.insert(req.body, {}, function(e, results){
     res.send(results)
     next()
@@ -23,15 +23,33 @@ module.exports.deleteById = function(req, res, next) {
 }
 
 module.exports.createCollection = function(req, res, next) {
-  db.createCollection(req.body.name, function(e, result) {
-    res.send(result)
+  db.createCollection(req.params.colName, function(e, result) {
+    if (!e) {
+      res.send({msg:'success'})
+    }
+    else {
+      res.send({msg:'error'})
+    }
     next()
   })
 }
 
 module.exports.deleteCollection = function(req, res, next) {
-  db.dropCollection(req.body.name, function(e, result) {
-    res.send((result===1)?{msg:'success'}:{msg:'error'})
+  db.dropCollection(req.params.colName, function(e, result) {
+    res.send((result===true)?{msg:'success'}:{msg:'error'})
+    next()
+  })
+}
+
+module.exports.renameCollection = function(req, res, next) {
+  db.renameCollection(req.params.colName, req.body.name, function(e, result) {
+    if (!e) {
+      res.send({msg:'success'})
+    }
+    else {
+      res.send({msg:'error'})
+    }
+    res.send((result===true)?{msg:'success'}:{msg:'error'})
     next()
   })
 }

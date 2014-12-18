@@ -5,8 +5,8 @@ module.exports.usage = function(req, res, next) {
   res.send('please select a collection, e.g., /colls/msgs')
 }
 
-module.exports.top10 = function(req, res, next) {
-  req.collection.find({} ,{limit:10, sort: [['_id',-1]]}).toArray(function(e, results){
+module.exports.getTop100Docs = function(req, res, next) {
+  req.collection.find({} ,{limit:100, sort: [['_id',-1]]}).toArray(function(e, results){
     res.send(results)
     next()
   })

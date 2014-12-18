@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 var mongoskin = require('mongoskin')
 var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
 
-app.param('collectionName', function(req, res, next, collectionName){
+app.param('colName', function(req, res, next, collectionName){
   req.collection = db.collection(collectionName)
   next()
 })
@@ -20,15 +20,19 @@ app.param('collectionName', function(req, res, next, collectionName){
 app.route('/')
 .all(query.usage)
 
-app.route('/colls')
+app.route('/cols')
 .get(query.getCollections)
+
+app.route('/cols/:colName')
 .post(command.createCollection)
+.delete(command.deleteCollection)
+.put(command.renameCollection)
 
-app.route('/colls/:collectionName')
-.get(query.top10)
-.post(command.insert)
+app.route('/cols/:colName/docs')
+.get(query.getTop100Docs)
+.post(command.insertDocs)
 
-app.route('/colls/:collectionName/:id')
+app.route('/cols/:colName/docs/:id')
 .get(query.findById)
 .put(command.updateById)
 .delete(command.deleteById)
