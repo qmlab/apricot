@@ -4,7 +4,10 @@ var express = require('express')
 , command = require('./command.js')
 
 var app = express()
-app.use(bodyParser())
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(bodyParser.json())
 
 var mongoskin = require('mongoskin')
 var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
@@ -16,6 +19,10 @@ app.param('collectionName', function(req, res, next, collectionName){
 
 app.route('/')
 .all(query.usage)
+
+app.route('/colls')
+.get(query.getCollections)
+.post(command.createCollection)
 
 app.route('/colls/:collectionName')
 .get(query.top10)

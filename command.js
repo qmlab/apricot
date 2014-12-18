@@ -21,3 +21,17 @@ module.exports.deleteById = function(req, res, next) {
     next()
   })
 }
+
+module.exports.createCollection = function(req, res, next) {
+  db.createCollection(req.body.name, function(e, result) {
+    res.send(result)
+    next()
+  })
+}
+
+module.exports.deleteCollection = function(req, res, next) {
+  db.dropCollection(req.body.name, function(e, result) {
+    res.send((result===1)?{msg:'success'}:{msg:'error'})
+    next()
+  })
+}

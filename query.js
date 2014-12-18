@@ -7,14 +7,21 @@ module.exports.usage = function(req, res, next) {
 
 module.exports.top10 = function(req, res, next) {
   req.collection.find({} ,{limit:10, sort: [['_id',-1]]}).toArray(function(e, results){
-      res.send(results)
-      next()
-    })
-  }
+    res.send(results)
+    next()
+  })
+}
 
 module.exports.findById = function(req, res, next) {
   req.collection.findById(req.params.id, function(e, result){
-      res.send(result)
-      next()
-    })
-  }
+    res.send(result)
+    next()
+  })
+}
+
+module.exports.getCollections = function(req, res, next) {
+  db.collectionNames(function(err, items) {
+    res.send(items)
+    next()
+  })
+}
