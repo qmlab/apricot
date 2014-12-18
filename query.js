@@ -28,18 +28,43 @@ module.exports.getCollections = function(req, res, next) {
 }
 
 module.exports.getAll = function(req, res, next) {
-  req.collection.find(req.body, {sort: [['_id', -1]]}).toArray(function(e, results){
-    res.send(results)
-    next()
-  })
+  getAllInternal(req, res, next, 1000)
 }
 
 module.exports.getAllWithLimit = function(req, res, next) {
-  req.collection.find(req.body, {limit:req.params.limit, sort: [['_id', -1]]}).toArray(function(e, results){
+  getAllInternal(req, res, next, req.params.limit)
+}
+
+function getAllInternal(req, res, next, max) {
+  req.collection.find(req.body, {limit:max, sort: [['_id', -1]]}).toArray(function(e, results){
     res.send(results)
     next()
   })
 }
 
 module.exports.getNext = function(req, res, next) {
+  getNextInternal(req, res, next, 1)
+}
+
+module.exports.getNextBatch = function(req, res, next) {
+  getNextInternal(req, res, next, req.params.batchSize)
+}
+
+function getNextInternal(req, res, next, size) {
+  console.log(size)
+  var sess = req.session
+  var cursor
+  if (sess.previousQuery &&
+    JSON.stringify(sess.previousQuery) === JSON.stringify(req.body)) {
+      sess.docNumber++;
+  }
+  else {
+    sess.previousQuery = req.body
+    sess.docNumber = 0
+  }
+
+  cursor = req.collection.find(req.body, {limit: size, skip: sess.docNumber, sort: [['_id', -1]]}).toArray(function(e, results) {
+    res.send(results)
+    next()
+  })
 }

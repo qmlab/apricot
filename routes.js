@@ -1,5 +1,6 @@
 var express = require('express')
 , bodyParser = require('body-parser')
+, session = require('express-session')
 , query = require('./query.js')
 , command = require('./command.js')
 
@@ -8,6 +9,12 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 app.use(bodyParser.json())
+app.use(session({
+  secret: 'fruit lover',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 600000 }
+}))
 
 var mongoskin = require('mongoskin')
 var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
@@ -43,12 +50,11 @@ app.route('/cols/:colName/all')
 app.route('/cols/:colName/all/:limit')
 .post(query.getAllWithLimit)
 
-/*app.route('/cols/:colName/next')
+app.route('/cols/:colName/next')
 .post(query.getNext)
 
 app.route('/cols/:colName/next/:batchSize')
 .post(query.getNextBatch)
-*/
 
 // the first parameter is port
 app.listen(process.argv[2])
