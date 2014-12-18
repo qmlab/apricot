@@ -51,20 +51,18 @@ module.exports.getNextBatch = function(req, res, next) {
 }
 
 function getNextInternal(req, res, next, size) {
-  console.log(size)
   var sess = req.session
   var cursor
-  if (sess.previousQuery &&
-    JSON.stringify(sess.previousQuery) === JSON.stringify(req.body)) {
-      sess.docNumber++;
-  }
-  else {
+  if (!sess.previousQuery ||
+    JSON.stringify(sess.previousQuery) != JSON.stringify(req.body)) {
     sess.previousQuery = req.body
     sess.docNumber = 0
   }
 
-  cursor = req.collection.find(req.body, {limit: size, skip: sess.docNumber, sort: [['_id', -1]]}).toArray(function(e, results) {
+  cursor = req.collection.find(req.body, {limit: parseInt(size), skip: sess.docNumber, sort: [['_id', -1]]}).toArray(function(e, results) {
     res.send(results)
     next()
   })
+
+  sess.docNumber += parseInt(size)
 }
