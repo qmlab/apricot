@@ -24,37 +24,78 @@ app.param('colName', function(req, res, next, collectionName){
   next()
 })
 
+// Show usage
 app.route('/')
 .all(query.usage)
 
+// Show all collections
 app.route('/cols')
 .get(query.getCollections)
 
-app.route('/cols/:colName')
+// Collection operations
+// POST - create collection
+// DELETE - delete collection
+// PUT - rename collection
+app.route('/col/:colName')
 .post(command.createCollection)
 .delete(command.deleteCollection)
 .put(command.renameCollection)
 
-app.route('/cols/:colName/docs')
+// Multi-doc operations
+// GET - get top 100 docs
+// POST - insert docs
+app.route('/col/:colName/docs')
 .get(query.getTop100Docs)
 .post(command.insertDocs)
 
-app.route('/cols/:colName/docs/:id')
+// Single-doc operations
+// GET - find doc by Id
+// PUT - replace entire doc by Id
+// DELETE - delete doc by Id
+app.route('/col/:colName/byid/:id')
 .get(query.findById)
 .put(command.updateById)
 .delete(command.deleteById)
 
-app.route('/cols/:colName/all')
+// Get all records as array of a maximum of 1000 records
+app.route('/col/:colName/all')
 .post(query.getAll)
 
-app.route('/cols/:colName/all/:limit')
+// Get all records as array of a maximum of N records
+app.route('/col/:colName/all/:limit')
 .post(query.getAllWithLimit)
 
-app.route('/cols/:colName/next')
+// Get the next record for the query
+app.route('/col/:colName/next')
 .post(query.getNext)
 
-app.route('/cols/:colName/next/:batchSize')
+// Get the next N records for the query
+app.route('/col/:colName/next/:batchSize')
 .post(query.getNextBatch)
+
+// Reset the cursor for the session
+app.route('/reset')
+.all(query.reset)
+
+// Count the number of documents
+// GET - get count of all documents in a collection
+// POST - get the count of the query results
+app.route('/col/:colName/count')
+.get(query.countAllDocs)
+.post(query.countDocs)
+
+// Get the max/min of a property (optionally groupby a category)
+app.route('/col/:colName/max/:propName')
+.post(query.max)
+
+app.route('/col/:colName/max/:propName/groupby/:groupByName')
+.post(query.max)
+
+app.route('/col/:colName/min/:propName')
+.post(query.min)
+
+app.route('/col/:colName/min/:propName/groupby/:groupByName')
+.post(query.min)
 
 // the first parameter is port
 app.listen(process.argv[2])
