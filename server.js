@@ -37,5 +37,18 @@ app.route('/cols/:colName/docs/:id')
 .put(command.updateById)
 .delete(command.deleteById)
 
+app.route('/cols/:colName/all')
+.post(query.getAll)
+
+app.route('/cols/:colName/all/:limit')
+.post(query.getAllWithLimit)
+
+/*app.route('/cols/:colName/next')
+.post(query.getNext)
+
+app.route('/cols/:colName/next/:batchSize')
+.post(query.getNextBatch)
+*/
+
 // the first parameter is port
 app.listen(process.argv[2])
