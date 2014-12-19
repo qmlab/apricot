@@ -1,0 +1,16 @@
+{
+  "app": {
+    "version": "v0.5"
+  },
+  "server": {
+    "secret": "fruit lover",
+    "resave": false,
+    "saveUninitialized": true,
+    "cookielife": 60000,
+    "compress": false,
+    "port": 10086
+  },
+  "db": {
+    "mongourl": "mongodb://@localhost:27017/db"
+  }
+}

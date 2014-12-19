@@ -161,8 +161,6 @@ module.exports.min = function(req, res, next) {
   aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }
 
-//module.exports.sum = function()
-
 function aggInternal(req, res, next, map, reduce, prop, groupby) {
   req.collection.mapReduce(map, reduce, {query: req.body, scope: {property: prop, group: groupby}, out: {replace : 'replaceThisCollection'}}, function(e, outCollection) {
     if (e) {
