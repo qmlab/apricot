@@ -1,6 +1,3 @@
-var mongoskin = require('mongoskin')
-var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
-
 module.exports.insertDocs = function(req, res, next) {
   req.collection.insert(req.body, {}, function(e, results){
     res.send(results)

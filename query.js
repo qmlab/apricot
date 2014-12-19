@@ -1,9 +1,6 @@
-var mongoskin = require('mongoskin')
-var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
-var cursors = {}
-
 module.exports.usage = function(req, res, next) {
   res.send('please select a collection, e.g., /colls/msgs')
+  next()
 }
 
 module.exports.findById = function(req, res, next) {
@@ -13,48 +10,18 @@ module.exports.findById = function(req, res, next) {
   })
 }
 
-function pageResult(results, page, perPage) {
-  var start = getStart(page, perPage)
-  var end = getEnd(page, perPage)
-  return results.slice(start, end)
-}
-
-function getStart(page, perPage) {
-  var _page = page
-  var _perPage = perPage
-  if (!page) {
-    _page = 1
-  }
-  if (!perPage) {
-    _perPage = 1000
-  }
-  return parseInt(_page - 1) * _perPage
-}
-
-function getEnd(page, perPage) {
-  var _page = page
-  var _perPage = perPage
-  if (!page) {
-    _page = 1
-  }
-  if (!perPage) {
-    _perPage = 1000
-  }
-  return parseInt(_page) * _perPage
-}
-
 module.exports.getCollections = function(req, res, next) {
   db.collectionNames(function(err, items) {
-    res.send(pageResult(items, req.query.page, req.query.per_page))
+    res.send(util.pageResult(items, req.query.page, req.query.per_page))
     next()
   })
 }
 
 module.exports.getDocs = function(req, res, next) {
-  var start = getStart(req.query.page, req.query.per_page)
+  var start = util.getStart(req.query.page, req.query.per_page)
   var max = req.query.per_page
   req.collection.find(req.body, {skip:start, limit:max, sort: [['_id', -1]]}).toArray(function(e, results){
-    res.send(results)
+    res.send(util.pageResult(results, req.query.page, req.query.per_page))
     next()
   })
 }
@@ -85,6 +52,7 @@ module.exports.reset = function(req, res, next) {
   var sess = req.session
   sess.skipToken = 0
   res.send((sess.skipToken === 0)?{msg:'success'}:{msg:'error'})
+  next()
 }
 
 module.exports.count = function(req, res, next) {
@@ -96,7 +64,7 @@ module.exports.count = function(req, res, next) {
     return Array.sum(values)
   }
 
-  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
+  util.aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }
 
 module.exports.sum = function(req, res, next) {
@@ -108,7 +76,7 @@ module.exports.sum = function(req, res, next) {
     return Array.sum(values)
   }
 
-  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
+  util.aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }
 
 module.exports.avg = function(req, res, next) {
@@ -120,7 +88,7 @@ module.exports.avg = function(req, res, next) {
     return values.length != 0 ? Array.sum(values) / values.length : 0
   }
 
-  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
+  util.aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }
 
 module.exports.max = function(req, res, next) {
@@ -139,7 +107,7 @@ module.exports.max = function(req, res, next) {
     return result
   }
 
-  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
+  util.aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }
 
 module.exports.min = function(req, res, next) {
@@ -158,17 +126,5 @@ module.exports.min = function(req, res, next) {
     return result
   }
 
-  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
-}
-
-function aggInternal(req, res, next, map, reduce, prop, groupby) {
-  req.collection.mapReduce(map, reduce, {query: req.body, scope: {property: prop, group: groupby}, out: {replace : 'replaceThisCollection'}}, function(e, outCollection) {
-    if (e) {
-      console.log(e)
-    }
-    outCollection.find().toArray(function(e, results) {
-      res.send(results)
-      next()
-    })
-  })
+  util.aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }

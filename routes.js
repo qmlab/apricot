@@ -1,8 +1,7 @@
-var express = require('express')
-, query = require('./query.js')
+var query = require('./query.js')
 , command = require('./command.js')
 
-module.exports = function(db) {
+module.exports = function() {
   var router = express.Router()
   router.param('colName', function(req, res, next, collectionName){
     req.collection = db.collection(collectionName)
