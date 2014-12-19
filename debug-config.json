@@ -8,7 +8,8 @@
     "saveUninitialized": true,
     "cookielife": 60000,
     "compress": false,
-    "port": 10086
+    "port": 10086,
+    "baseurl": "/"
   },
   "db": {
     "mongourl": "mongodb://@localhost:27017/db"
