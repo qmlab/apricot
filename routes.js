@@ -32,9 +32,10 @@ module.exports = function() {
   .put(command.renameCollection)
 
   // Multi-doc operations
-  // GET - get top 100 docs
+  // GET - get docs
   // POST - insert docs
-  // PATCH - update docs. req.body[0] is search pattern and req.body[1] is patching action
+  // PATCH - partially update docs. req.body[0] is search pattern and req.body[1] is patching action
+  // DELETE - delete docs. (optionally by a query as req.body)
   router.route('/col/:colName/docs')
   .get(query.getDocs)
   .post(command.insertDocs)
