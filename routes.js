@@ -1,99 +1,82 @@
 var express = require('express')
-, bodyParser = require('body-parser')
-, session = require('express-session')
-, compress = require('compression')
 , query = require('./query.js')
 , command = require('./command.js')
 
-var app = express()
-app.use(bodyParser.urlencoded({
-  extended: true
-}))
-app.use(bodyParser.json())
-app.use(session({
-  secret: 'fruit lover',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 600000 }
-}))
-app.use(compress())
+module.exports = function(db) {
+  var router = express.Router()
+  router.param('colName', function(req, res, next, collectionName){
+    req.collection = db.collection(collectionName)
+    next()
+  })
 
-var mongoskin = require('mongoskin')
-var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
+  // General query parameters:
+  // page=N - start from Nth page
+  // per_page=M - show M records in the response
+  // prop=P - the property name to aggregate on
+  // groupby=G - the property name to group by in aggregation
 
-app.param('colName', function(req, res, next, collectionName){
-  req.collection = db.collection(collectionName)
-  next()
-})
+  // Show usage
+  router.route('/')
+  .all(query.usage)
 
-// General query parameters:
-// page=N - start from Nth page
-// per_page=M - show M records in the response
-// prop=P - the property name to aggregate on
-// groupby=G - the property name to group by in aggregation
+  // Show all collections
+  router.route('/cols')
+  .get(query.getCollections)
 
-// Show usage
-app.route('/')
-.all(query.usage)
+  // Collection operations
+  // POST - create collection
+  // DELETE - delete collection
+  // PUT - rename collection
+  router.route('/col/:colName')
+  .post(command.createCollection)
+  .delete(command.deleteCollection)
+  .put(command.renameCollection)
 
-// Show all collections
-app.route('/cols')
-.get(query.getCollections)
+  // Multi-doc operations
+  // GET - get top 100 docs
+  // POST - insert docs
+  // PATCH - update docs. req.body[0] is search pattern and req.body[1] is patching action
+  router.route('/col/:colName/docs')
+  .get(query.getAll)
+  .post(command.insertDocs)
+  .patch(command.patchDocs)
 
-// Collection operations
-// POST - create collection
-// DELETE - delete collection
-// PUT - rename collection
-app.route('/col/:colName')
-.post(command.createCollection)
-.delete(command.deleteCollection)
-.put(command.renameCollection)
+  // Single-doc operations
+  // GET - find doc by Id
+  // PUT - replace entire doc by Id
+  // DELETE - delete doc by Id
+  router.route('/col/:colName/doc/:id')
+  .get(query.findById)
+  .put(command.updateById)
+  .delete(command.deleteById)
 
-// Multi-doc operations
-// GET - get top 100 docs
-// POST - insert docs
-// PATCH - update docs. req.body[0] is search pattern and req.body[1] is patching action
-app.route('/col/:colName/docs')
-.get(query.getAll)
-.post(command.insertDocs)
-.patch(command.patchDocs)
+  // Get the next record(s) for the query
+  router.route('/col/:colName/next')
+  .get(query.getNext)
+  .post(query.getNext)
 
-// Single-doc operations
-// GET - find doc by Id
-// PUT - replace entire doc by Id
-// DELETE - delete doc by Id
-app.route('/col/:colName/doc/:id')
-.get(query.findById)
-.put(command.updateById)
-.delete(command.deleteById)
+  // Reset the cursor for the session
+  router.route('/reset')
+  .get(query.reset)
+  .post(query.reset)
 
-// Get the next record(s) for the query
-app.route('/col/:colName/next')
-.get(query.getNext)
-.post(query.getNext)
+  // Count the number of documents
+  // GET - get count of all documents in a collection
+  // POST - get the count of the query results
+  router.route('/col/:colName/count')
+  .get(query.countDocs)
+  .post(query.countDocs)
 
-// Reset the cursor for the session
-app.route('/reset')
-.get(query.reset)
-.post(query.reset)
+  // Get the max/min of a property (optionally groupby a category)
+  // GET - calculate upon all docs
+  // POST - calculate upon the query results
+  router.route('/col/:colName/max')
+  .get(query.max)
+  .post(query.max)
 
-// Count the number of documents
-// GET - get count of all documents in a collection
-// POST - get the count of the query results
-app.route('/col/:colName/count')
-.get(query.countDocs)
-.post(query.countDocs)
+  router.route('/col/:colName/min')
+  .get(query.min)
+  .post(query.min)
 
-// Get the max/min of a property (optionally groupby a category)
-// GET - calculate upon all docs
-// POST - calculate upon the query results
-app.route('/col/:colName/max')
-.get(query.max)
-.post(query.max)
-
-app.route('/col/:colName/min')
-.get(query.min)
-.post(query.min)
-
-// the first parameter is port
-app.listen(process.argv[2])
+  return router
+}
