@@ -50,7 +50,7 @@ module.exports.getCollections = function(req, res, next) {
   })
 }
 
-module.exports.getAll = function(req, res, next) {
+module.exports.getDocs = function(req, res, next) {
   var start = getStart(req.query.page, req.query.per_page)
   var max = req.query.per_page
   req.collection.find(req.body, {skip:start, limit:max, sort: [['_id', -1]]}).toArray(function(e, results){
@@ -87,66 +87,84 @@ module.exports.reset = function(req, res, next) {
   res.send((sess.skipToken === 0)?{msg:'success'}:{msg:'error'})
 }
 
-module.exports.countDocs = function(req, res, next) {
-  var sess = req.session
-  var cursor = req.collection.find(req.body).count(function(e, cnt){
-    res.send({count: cnt})
-    next()
-  })
+module.exports.count = function(req, res, next) {
+  var map = function() {
+    emit(this[group], 1)
+  }
+
+  var reduce = function(key, values){
+    return Array.sum(values)
+  }
+
+  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
+}
+
+module.exports.sum = function(req, res, next) {
+  var map = function() {
+    emit(this[group], this[property])
+  }
+
+  var reduce = function(key, values) {
+    return Array.sum(values)
+  }
+
+  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
+}
+
+module.exports.avg = function(req, res, next) {
+  var map = function() {
+    emit(this[group], this[property])
+  }
+
+  var reduce = function(key, values) {
+    return values.length != 0 ? Array.sum(values) / values.length : 0
+  }
+
+  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }
 
 module.exports.max = function(req, res, next) {
-  maxInternal(req, res, next, req.query.prop, req.query.groupby)
-}
-
-function maxInternal(req, res, next, prop, groupby) {
   var map = function(){
-    var content = {value: this[property], _id: this._id}
-    emit(this[group], {max: content})
+    var content = {max: this[property], _id: this._id}
+    emit(this[group], content)
   }
 
   var reduce = function(key, values){
     var result = values[0]
     for (var i = 1; i < values.length; i++) {
-      if (values[i].max.value > result.max.value) {
-        result.max = values[i].max;
+      if (values[i].value > result.value) {
+        result = values[i];
       }
     }
     return result
   }
 
-  req.collection.mapReduce(map, reduce, {scope: {property: prop, group: groupby}, out: {replace : 'replaceThisCollection'}}, function(e, outCollection) {
-    if (e) {
-      console.log(e)
-    }
-    outCollection.find().toArray(function(e, results) {
-      res.send(results)
-      next()
-    })
-  })
+  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
 }
 
 module.exports.min = function(req, res, next) {
-  minInternal(req, res, next, req.query.prop, req.query.groupby)
-}
-
-function minInternal(req, res, next, prop, groupby) {
   var map = function(){
-    var content = {value: this[property], _id: this._id}
-    emit(this[group], {min: content})
+    var content = {min: this[property], _id: this._id}
+    emit(this[group], content)
   }
 
   var reduce = function(key, values){
     var result = values[0]
     for (var i = 1; i < values.length; i++) {
-      if (values[i].min.value < result.min.value) {
-        result.min = values[i].min;
+      if (values[i].value < result.value) {
+        result = values[i];
       }
     }
     return result
   }
 
-  req.collection.mapReduce(map, reduce, {scope: {property: prop, group: groupby}, out: {replace : 'replaceThisCollection'}}, function(e, outCollection) {
+  aggInternal(req, res, next, map, reduce, req.query.prop, req.query.groupby)
+}
+
+//module.exports.sum = function()
+
+function aggInternal(req, res, next, map, reduce, prop, groupby) {
+  req.collection.mapReduce(map, reduce, {query: req.body, scope: {property: prop, group: groupby}, out: {replace : 'replaceThisCollection'}}, function(e, outCollection) {
     if (e) {
       console.log(e)
     }

@@ -1,0 +1,15 @@
+{
+  "app": {
+    "version": "v0.5"
+  },
+  "server": {
+    "secret": "ZnJ1aXQgbG92ZXI=",
+    "resave": false,
+    "saveUninitialized": true,
+    "cookielife": 600000,
+    "compress": true
+  },
+  "db": {
+    "mongourl": "mongodb://@localhost:27017/db"
+  }
+}

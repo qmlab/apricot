@@ -60,3 +60,10 @@ module.exports.patchDocs = function(req, res, next) {
     next()
   })
 }
+
+module.exports.deleteDocs = function(req, res, next) {
+  req.collection.remove(req.body, function(e, result){
+    res.send((!e)?{msg:'success'}:{msg:'error'})
+    next()
+  })
+}

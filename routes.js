@@ -37,9 +37,10 @@ module.exports = function(db) {
   // POST - insert docs
   // PATCH - update docs. req.body[0] is search pattern and req.body[1] is patching action
   router.route('/col/:colName/docs')
-  .get(query.getAll)
+  .get(query.getDocs)
   .post(command.insertDocs)
   .patch(command.patchDocs)
+  .delete(command.deleteDocs)
 
   // Single-doc operations
   // GET - find doc by Id
@@ -60,12 +61,12 @@ module.exports = function(db) {
   .get(query.reset)
   .post(query.reset)
 
-  // Count the number of documents
+  // Count the number of documents (optionally groupby a category)
   // GET - get count of all documents in a collection
   // POST - get the count of the query results
   router.route('/col/:colName/count')
-  .get(query.countDocs)
-  .post(query.countDocs)
+  .get(query.count)
+  .post(query.count)
 
   // Get the max/min of a property (optionally groupby a category)
   // GET - calculate upon all docs
@@ -77,6 +78,17 @@ module.exports = function(db) {
   router.route('/col/:colName/min')
   .get(query.min)
   .post(query.min)
+
+  // Get the sum/avg the field of documents (optionally groupby a category)
+  // GET - calculate upon all docs
+  // POST - calculate upon the query results
+  router.route('/col/:colName/sum')
+  .get(query.sum)
+  .post(query.sum)
+
+  router.route('/col/:colName/avg')
+  .get(query.avg)
+  .post(query.avg)
 
   return router
 }
