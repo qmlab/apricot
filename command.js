@@ -53,3 +53,10 @@ module.exports.renameCollection = function(req, res, next) {
     next()
   })
 }
+
+module.exports.patchDocs = function(req, res, next) {
+  req.collection.update(req.body[0], {$set:req.body[1]}, {safe:true, multi:true}, function(e, result){
+    res.send((result===1)?{msg:'success'}:{msg:'error'})
+    next()
+  })
+}

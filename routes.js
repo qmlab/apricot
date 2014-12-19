@@ -1,6 +1,7 @@
 var express = require('express')
 , bodyParser = require('body-parser')
 , session = require('express-session')
+, compress = require('compression')
 , query = require('./query.js')
 , command = require('./command.js')
 
@@ -15,6 +16,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: { maxAge: 600000 }
 }))
+app.use(compress())
 
 var mongoskin = require('mongoskin')
 var db = mongoskin.db('mongodb://@localhost:27017/db', {safe:true})
@@ -23,6 +25,12 @@ app.param('colName', function(req, res, next, collectionName){
   req.collection = db.collection(collectionName)
   next()
 })
+
+// General query parameters:
+// page=N - start from Nth page
+// per_page=M - show M records in the response
+// prop=P - the property name to aggregate on
+// groupby=G - the property name to group by in aggregation
 
 // Show usage
 app.route('/')
@@ -44,57 +52,47 @@ app.route('/col/:colName')
 // Multi-doc operations
 // GET - get top 100 docs
 // POST - insert docs
+// PATCH - update docs. req.body[0] is search pattern and req.body[1] is patching action
 app.route('/col/:colName/docs')
-.get(query.getTop100Docs)
+.get(query.getAll)
 .post(command.insertDocs)
+.patch(command.patchDocs)
 
 // Single-doc operations
 // GET - find doc by Id
 // PUT - replace entire doc by Id
 // DELETE - delete doc by Id
-app.route('/col/:colName/byid/:id')
+app.route('/col/:colName/doc/:id')
 .get(query.findById)
 .put(command.updateById)
 .delete(command.deleteById)
 
-// Get all records as array of a maximum of 1000 records
-app.route('/col/:colName/all')
-.post(query.getAll)
-
-// Get all records as array of a maximum of N records
-app.route('/col/:colName/all/:limit')
-.post(query.getAllWithLimit)
-
-// Get the next record for the query
+// Get the next record(s) for the query
 app.route('/col/:colName/next')
+.get(query.getNext)
 .post(query.getNext)
-
-// Get the next N records for the query
-app.route('/col/:colName/next/:batchSize')
-.post(query.getNextBatch)
 
 // Reset the cursor for the session
 app.route('/reset')
-.all(query.reset)
+.get(query.reset)
+.post(query.reset)
 
 // Count the number of documents
 // GET - get count of all documents in a collection
 // POST - get the count of the query results
 app.route('/col/:colName/count')
-.get(query.countAllDocs)
+.get(query.countDocs)
 .post(query.countDocs)
 
 // Get the max/min of a property (optionally groupby a category)
-app.route('/col/:colName/max/:propName')
+// GET - calculate upon all docs
+// POST - calculate upon the query results
+app.route('/col/:colName/max')
+.get(query.max)
 .post(query.max)
 
-app.route('/col/:colName/max/:propName/groupby/:groupByName')
-.post(query.max)
-
-app.route('/col/:colName/min/:propName')
-.post(query.min)
-
-app.route('/col/:colName/min/:propName/groupby/:groupByName')
+app.route('/col/:colName/min')
+.get(query.min)
 .post(query.min)
 
 // the first parameter is port
