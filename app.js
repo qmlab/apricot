@@ -50,4 +50,4 @@ if (nconf.get('server:compress')) {
 
 // Init URLs with versioning
 var baseurl = nconf.get('server:baseurl')
-var version = nconf.get('app:version')app.use(baseurl ? baseurl : '/', router())if (version) {  // Versioned URLs  app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/' + version, router())  // Old versions  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.5', routerV05)  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.3', routerV03)  //...}// Start the serverapp.listen(nconf.get('server:port'))
+var version = nconf.get('app:version')app.use(baseurl ? baseurl : '/', router())if (version) {  // Versioned URLs  app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/' + version, router())  // Older versions  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.5', routerV05)  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.3', routerV03)  //...}// Start the serverapp.listen(nconf.get('server:port'))
