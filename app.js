@@ -1,6 +1,7 @@
 /* Entry file for the app */
 express = require('express')
 util = require('./util.js')
+mongoose = require('mongoose')
 
 var bodyParser = require('body-parser')
 , session = require('express-session')
@@ -8,6 +9,8 @@ var bodyParser = require('body-parser')
 , nconf = require('nconf')
 , router = require('./routes.js')
 , mongoskin = require('mongoskin')
+, passport = require('passport')
+, authController = require('./controllers/auth.js')
 
 // Whether this is debug or release
 var isDebug = true
@@ -27,9 +30,11 @@ else {
 
 // Init DB (Global)
 db = mongoskin.db(nconf.get('db:mongourl'), {safe:true})
+mongoose.connect(nconf.get('db:mongourl'))
+
+var app = express()
 
 // Init body-parser
-var app = express()
 app.use(bodyParser.urlencoded({
   extended: true
 }))
@@ -47,6 +52,9 @@ app.use(session({
 if (nconf.get('server:compress')) {
   app.use(compress())
 }
+
+// Init Auth manager
+app.use(passport.initialize())
 
 // Init URLs with versioning
 var baseurl = nconf.get('server:baseurl')
