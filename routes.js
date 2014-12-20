@@ -58,8 +58,7 @@ module.exports = function() {
 
   // Reset the cursor for the session
   router.route('/reset')
-  .get(query.reset)
-  .post(query.reset)
+  .all(query.reset)
 
   // Count the number of documents (optionally groupby a category)
   // GET - get count of all documents in a collection

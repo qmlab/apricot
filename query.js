@@ -1,5 +1,5 @@
 module.exports.usage = function(req, res, next) {
-  res.send('please select a collection, e.g., /colls/msgs')
+  res.send(util.usage())
   next()
 }
 
@@ -33,14 +33,13 @@ module.exports.getNext = function(req, res, next) {
   }
 
   var sess = req.session
-  var cursor
   if (!sess.previousQuery ||
     JSON.stringify(sess.previousQuery) != JSON.stringify(req.body)) {
     sess.previousQuery = req.body
     sess.skipToken = 0
   }
 
-  cursor = req.collection.find(req.body, {limit: size, skip: sess.skipToken, sort: [['_id', -1]]}).toArray(function(e, results) {
+  req.collection.find(req.body, {limit: size, skip: sess.skipToken, sort: [['_id', -1]]}).toArray(function(e, results) {
     res.send(results)
     next()
   })
@@ -51,6 +50,7 @@ module.exports.getNext = function(req, res, next) {
 module.exports.reset = function(req, res, next) {
   var sess = req.session
   sess.skipToken = 0
+  if (cursor) cursor.rewind()
   res.send((sess.skipToken === 0)?{msg:'success'}:{msg:'error'})
   next()
 }
