@@ -6,7 +6,8 @@ nconf = require('nconf')
 var bodyParser = require('body-parser')
 , session = require('express-session')
 , compress = require('compression')
-, router = require('./routes.js')
+, router = require('./routes-user.js')
+, routerAdmin = require('./routes-admin.js')
 , passport = require('passport')
 , authController = require('./controllers/auth.js')
 , mongoose = require('mongoose')
@@ -59,4 +60,4 @@ app.use(passport.initialize())
 
 // Init URLs with versioning
 var baseurl = nconf.get('server:baseurl')
-var version = nconf.get('app:version')app.use(baseurl ? baseurl : '/', router())if (version) {  // Versioned URLs  app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/' + version, router())  // Older versions  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.5', routerV05)  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.3', routerV03)  //...}// Start servervar protocol = nconf.get('server:protocol')var port = nconf.get('server:port')if (protocol === 'http') {  app.listen(port)}else if (protocol === 'https') {  var privateKey  = fs.readFileSync('certs/serverkey.pem', 'utf8')  var certificate = fs.readFileSync('certs/server.cer', 'utf8')  var credentials = {key: privateKey, cert: certificate}  var httpsServer = https.createServer(credentials, app)  httpsServer.listen(port)}
+var version = nconf.get('app:version')app.use('/manage', routerAdmin())app.use(baseurl ? baseurl : '/db', router())if (version) {  // Versioned URLs  app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/' + version, router())  // Older versions  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.5', routerV05)  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.3', routerV03)  //...}// Start servervar protocol = nconf.get('server:protocol')var port = nconf.get('server:port')if (protocol === 'http') {  app.listen(port)}else if (protocol === 'https') {  var privateKey  = fs.readFileSync('certs/serverkey.pem', 'utf8')  var certificate = fs.readFileSync('certs/server.cer', 'utf8')  var credentials = {key: privateKey, cert: certificate}  var httpsServer = https.createServer(credentials, app)  httpsServer.listen(port)}

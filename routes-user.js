@@ -6,10 +6,10 @@ var query = require('./controllers/query.js')
 , mongoskin = require('mongoskin')
 
 module.exports = function() {
-  var authenticate = passport.authenticate(nconf.get('server:auth'), { session : false })
+  var requireAuth = passport.authenticate(nconf.get('server:auth'), { session : false })
   var router = express.Router()
 
-  router.all('*', authenticate, function(req, res, next) {
+  router.all('*', requireAuth, function(req, res, next) {
     req.db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
     next()
   })
@@ -99,11 +99,6 @@ module.exports = function() {
   router.route('/col/:colName/avg')
   .get(query.avg)
   .post(query.avg)
-
-  // Create endpoint handlers for /users
-  router.route('/users')
-  .post(userController.postUsers)
-  .get(userController.getUsers)
 
   return router
 }

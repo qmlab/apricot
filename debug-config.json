@@ -9,7 +9,7 @@
     "cookielife": 60000,
     "compress": false,
     "port": 10086,
-    "baseurl": "/",
+    "baseurl": "/db",
     "auth": "basic",
     "protocol": "http"
   },
