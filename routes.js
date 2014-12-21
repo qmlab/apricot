@@ -9,11 +9,13 @@ module.exports = function() {
   var authenticate = passport.authenticate(nconf.get('server:auth'), { session : false })
   var router = express.Router()
 
-  router.all('*', authenticate)
+  router.all('*', authenticate, function(req, res, next) {
+    req.db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
+    next()
+  })
 
   router.param('colName', function(req, res, next, collectionName){
-    var db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
-    req.collection = db.collection(collectionName)
+    req.collection = req.db.collection(collectionName)
     next()
   })
 

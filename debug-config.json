@@ -10,7 +10,8 @@
     "compress": false,
     "port": 10086,
     "baseurl": "/",
-    "auth": "basic"
+    "auth": "basic",
+    "protocol": "http"
   },
   "db": {
     "mongourl": "mongodb://@localhost:27017/db"

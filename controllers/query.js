@@ -13,8 +13,7 @@ module.exports.findById = function(req, res, next) {
 }
 
 module.exports.getCollections = function(req, res, next) {
-  var db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
-  db.collectionNames(function(err, items) {
+  req.db.collectionNames(function(err, items) {
     res.send(util.pageResult(items, req.query.page, req.query.per_page))
     next()
   })
