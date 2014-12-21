@@ -1,16 +1,15 @@
 /* Entry file for the app */
 express = require('express')
 util = require('./util.js')
-mongoose = require('mongoose')
+nconf = require('nconf')
 
 var bodyParser = require('body-parser')
 , session = require('express-session')
 , compress = require('compression')
-, nconf = require('nconf')
 , router = require('./routes.js')
-, mongoskin = require('mongoskin')
 , passport = require('passport')
 , authController = require('./controllers/auth.js')
+, mongoose = require('mongoose')
 
 // Whether this is debug or release
 var isDebug = true
@@ -29,7 +28,6 @@ else {
 
 
 // Init DB (Global)
-db = mongoskin.db(nconf.get('db:mongourl'), {safe:true})
 mongoose.connect(nconf.get('db:mongourl'))
 
 var app = express()

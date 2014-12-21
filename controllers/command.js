@@ -20,6 +20,7 @@ module.exports.deleteById = function(req, res, next) {
 }
 
 module.exports.createCollection = function(req, res, next) {
+  var db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
   db.createCollection(req.params.colName, function(e, result) {
     if (!e) {
       res.send({msg:'success'})
@@ -32,6 +33,7 @@ module.exports.createCollection = function(req, res, next) {
 }
 
 module.exports.deleteCollection = function(req, res, next) {
+  var db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
   db.dropCollection(req.params.colName, function(e, result) {
     res.send((result===true)?{msg:'success'}:{msg:'error'})
     next()
@@ -39,6 +41,7 @@ module.exports.deleteCollection = function(req, res, next) {
 }
 
 module.exports.renameCollection = function(req, res, next) {
+  var db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
   db.renameCollection(req.params.colName, req.body.name, function(e, result) {
     if (!e) {
       res.send({msg:'success'})

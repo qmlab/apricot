@@ -9,7 +9,8 @@
     "cookielife": 600000,
     "compress": true,
     "port": 20086,
-    "baseurl": "/db"
+    "baseurl": "/db",
+    "auth": "basic"
   },
   "db": {
     "mongourl": "mongodb://@localhost:27017/db"

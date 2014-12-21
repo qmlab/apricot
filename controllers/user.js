@@ -1,25 +1,35 @@
 // Load required packages
 var User = require('../models/user');
 
-// Create endpoint /api/users for POST
+// Create endpoint /users for POST
 exports.postUsers = function(req, res, next) {
   var user = new User({
     username: req.body.username,
     password: req.body.password
   })
 
-  user.save(function(err) {
-    if (err) console.log(err)
-    res.send({ message: 'New user has been successfully added' });
+  user.save(function(e) {
+    if (e) {
+      res.send(e)
+    }
+    else {
+      res.send({ message: 'New user added' });
+    }
     next()
   })
 }
 
-// Create endpoint /api/users for GET
+// Create endpoint /users for GET
 exports.getUsers = function(req, res, next) {
-  User.find(function(err, users) {
-    if (err) console.log(err)
-    res.send(users)
+  User.find(function(e, users) {
+    if (e) {
+      res.send(e)
+    }
+    else {
+      res.send(users.map(function(user) {
+        return user.username
+      }))
+    }
     next()
   })
 }
