@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-// Init session management
+// Init session management(only for iterations)
 app.use(session({
   secret: nconf.get('server:secret'),
   resave: nconf.get('server:resave'),
@@ -60,4 +60,4 @@ app.use(passport.initialize())
 
 // Init URLs with versioning
 var baseurl = nconf.get('server:baseurl')
-var version = nconf.get('app:version')app.use('/manage', routerAdmin())app.use(baseurl ? baseurl : '/db', router())if (version) {  // Versioned URLs  app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/' + version, router())  // Older versions  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.5', routerV05)  //app.use(util.trimTailingSlash(baseurl ? baseurl : '/') + '/v0.3', routerV03)  //...}// Start servervar protocol = nconf.get('server:protocol')var port = nconf.get('server:port')if (protocol === 'http') {  app.listen(port)}else if (protocol === 'https') {  var privateKey  = fs.readFileSync('certs/serverkey.pem', 'utf8')  var certificate = fs.readFileSync('certs/server.cer', 'utf8')  var credentials = {key: privateKey, cert: certificate}  var httpsServer = https.createServer(credentials, app)  httpsServer.listen(port)}
+var version = nconf.get('app:version')app.use('/manage', routerAdmin())app.use('/db' + (baseurl ? baseurl : ''), router())if (version) {  // Versioned URLs  app.use(util.trimTailingSlash('/db' + (baseurl ? baseurl : '')) + '/' + version, router())  // Older versions  //app.use(util.trimTailingSlash('/db' + (baseurl ? baseurl : '')) + '/v0.5' + version, router())  //app.use(util.trimTailingSlash('/db' + (baseurl ? baseurl : '')) + '/v0.2' + version, router())  //...}// Start servervar protocol = nconf.get('server:protocol')var port = nconf.get('server:port')if (protocol === 'http') {  app.listen(port)}else if (protocol === 'https') {  var privateKey  = fs.readFileSync('certs/serverkey.pem', 'utf8')  var certificate = fs.readFileSync('certs/server.cer', 'utf8')  var credentials = {key: privateKey, cert: certificate}  var httpsServer = https.createServer(credentials, app)  httpsServer.listen(port)}

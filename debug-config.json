@@ -9,9 +9,37 @@
     "cookielife": 60000,
     "compress": false,
     "port": 10086,
-    "baseurl": "/db",
+    "baseurl": "/",
     "auth": "basic",
     "protocol": "http"
+  },
+  "ratelimits": {
+    "manual": 1,
+    "cols": 10,
+    "col": {
+      "post": 100,
+      "put": 100,
+      "delete": 100
+    },
+    "docs": {
+      "get": 500,
+      "post": 200,
+      "patch": 100,
+      "delete": 100
+    },
+    "doc": {
+      "get": 500,
+      "put": 200,
+      "delete": 100
+    },
+    "next": {
+      "get": 500,
+      "post": 500
+    },
+    "agg": {
+      "get": 200,
+      "post": 200
+    }
   },
   "db": {
     "mongourl": "mongodb://@localhost:27017/db"
