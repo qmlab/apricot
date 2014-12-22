@@ -109,7 +109,7 @@ module.exports.avg = function(req, res, next) {
 
 module.exports.max = function(req, res, next) {
   var map = function(){
-    var content = {max: this[property], _id: this._id}
+    var content = {value: this[property], _id: this._id}
     emit(this[group], content)
   }
 
@@ -128,7 +128,7 @@ module.exports.max = function(req, res, next) {
 
 module.exports.min = function(req, res, next) {
   var map = function(){
-    var content = {min: this[property], _id: this._id}
+    var content = {value: this[property], _id: this._id}
     emit(this[group], content)
   }
 
