@@ -21,7 +21,7 @@ module.exports.getCollections = function(req, res, next) {
 
 module.exports.getDocs = function(req, res, next) {
   var start = util.getStart(req.query.page, req.query.per_page)
-  var max = req.query.per_page
+  var max =  parseInt(req.query.per_page)
   var sort = (req.query.orderby) ? req.query.orderby : '_id'
   var order = (req.query.desc) ? -1 : 1
   var options = {
@@ -29,8 +29,9 @@ module.exports.getDocs = function(req, res, next) {
     limit: max,
     sort: [[sort, order]]
   }
+  
   req.collection.find(req.body, options).toArray(function(e, results){
-    res.send(util.pageResult(results, req.query.page, req.query.per_page))
+    res.send(results)
     next()
   })
 }
@@ -52,7 +53,7 @@ module.exports.getNext = function(req, res, next) {
   var order = (req.query.desc) ? -1 : 1
   var options = {
     skip: sess.skipToken,
-    limit: max,
+    limit: size,
     sort: [[sort, order]]
   }
 
