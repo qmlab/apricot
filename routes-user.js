@@ -46,12 +46,14 @@ module.exports = function() {
 
   // Multi-doc operations
   // GET - get docs
-  // POST - insert docs
+  // POST - query docs
+  // PUT - insert docs
   // PATCH - partially update docs. req.body[0] is search pattern and req.body[1] is patching action
   // DELETE - delete docs. (optionally by a query as req.body)
   router.route('/col/:colName/docs')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:get'), setHeaders: true}), query.getDocs)
-  .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:post'), setHeaders: true}), command.insertDocs)
+  .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:get'), setHeaders: true}), query.getDocs)
+  .put(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:post'), setHeaders: true}), command.insertDocs)
   .patch(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:patch'), setHeaders: true}), command.patchDocs)
   .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:delete'), setHeaders: true}), command.deleteDocs)
 
