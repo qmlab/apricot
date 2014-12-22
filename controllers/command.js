@@ -46,7 +46,6 @@ module.exports.renameCollection = function(req, res, next) {
     else {
       res.send({msg:'error'})
     }
-    res.send((result===true)?{msg:'success'}:{msg:'error'})
     next()
   })
 }

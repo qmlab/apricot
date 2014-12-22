@@ -22,7 +22,14 @@ module.exports.getCollections = function(req, res, next) {
 module.exports.getDocs = function(req, res, next) {
   var start = util.getStart(req.query.page, req.query.per_page)
   var max = req.query.per_page
-  req.collection.find(req.body, {skip:start, limit:max, sort: [['_id', -1]]}).toArray(function(e, results){
+  var sort = (req.query.orderby) ? req.query.orderby : '_id'
+  var order = (req.query.desc) ? -1 : 1
+  var options = {
+    skip: start,
+    limit: max,
+    sort: [[sort, order]]
+  }
+  req.collection.find(req.body, options).toArray(function(e, results){
     res.send(util.pageResult(results, req.query.page, req.query.per_page))
     next()
   })
@@ -41,7 +48,15 @@ module.exports.getNext = function(req, res, next) {
     sess.skipToken = 0
   }
 
-  req.collection.find(req.body, {limit: size, skip: sess.skipToken, sort: [['_id', -1]]}).toArray(function(e, results) {
+  var sort = (req.query.orderby) ? req.query.orderby : '_id'
+  var order = (req.query.desc) ? -1 : 1
+  var options = {
+    skip: sess.skipToken,
+    limit: max,
+    sort: [[sort, order]]
+  }
+
+  req.collection.find(req.body, options).toArray(function(e, results) {
     res.send(results)
     next()
   })
@@ -52,7 +67,6 @@ module.exports.getNext = function(req, res, next) {
 module.exports.reset = function(req, res, next) {
   var sess = req.session
   sess.skipToken = 0
-  if (cursor) cursor.rewind()
   res.send((sess.skipToken === 0)?{msg:'success'}:{msg:'error'})
   next()
 }
