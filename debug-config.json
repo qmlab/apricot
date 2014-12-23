@@ -10,7 +10,7 @@
     "compress": false,
     "port": 10086,
     "baseurl": "/",
-    "auth": "digest",
+    "auth": "basic",
     "protocol": "http"
   },
   "ratelimits": {
