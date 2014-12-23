@@ -7,12 +7,23 @@ var query = require('./controllers/query.js')
 , rate = require('express-rate')
 
 module.exports = function() {
-  var requireAuth = passport.authenticate(nconf.get('server:auth'), { session : false })
+  var userAuth
+  if (nconf.get('server:auth') === 'digest') {
+    userAuth= passport.authenticate('digest-user', { session : false })
+  }
+  else if (nconf.get('server:auth') === 'basic') {
+    userAuth = passport.authenticate('basic', { session : false })
+  }
+  else {
+    console.error('unrecognized auth')
+  }
   var router = express.Router()
   var handler = new rate.Memory.MemoryRateHandler()
 
-  router.all('*', requireAuth, function(req, res, next) {
-    req.db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
+  router.all('*', userAuth, function(req, res, next) {
+    if (req.user) {
+      req.db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
+    }
     next()
   })
 

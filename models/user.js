@@ -12,7 +12,13 @@ var UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  adminKey: {
+    type: String
+  },
+  apiKey: {
+    type: String
+  },
 });
 
 // Execute before each user.save() call
@@ -26,20 +32,29 @@ UserSchema.pre('save', function(callback) {
   bcrypt.genSalt(5, function(err, salt) {
     if (err) return callback(err);
 
-    bcrypt.hash(user.password, salt, null, function(err, hash) {
+    bcrypt.hash(user.username + '+' + 'panda', salt, null, function(err, hash) {
       if (err) return callback(err);
-      user.password = hash;
-      callback();
-    });
-  });
-});
+      user.adminKey = hash;
+      bcrypt.hash(user.username + '+' + 'tiger', salt, null, function(err, hash) {
+        if (err) return callback(err);
+        user.apiKey = hash;
+        callback()
+      })
+    })
+  })
+})
 
+/* // Skip this encoding because basic is only supposed to be used in debug env
 UserSchema.methods.verifyPassword = function(password, cb) {
   bcrypt.compare(password, this.password, function(err, isMatch) {
     if (err) return cb(err);
     cb(null, isMatch);
   });
 };
+*/
+UserSchema.methods.verifyPassword = function(password, cb) {
+  cb(null, password === this.password)
+}
 
 // Export the Mongoose model
 module.exports = mongoose.model('User', UserSchema);

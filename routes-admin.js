@@ -7,5 +7,11 @@ var query = require('./controllers/query.js')
 , rate = require('express-rate')
 
 module.exports = function() {
-  var requireAuth = passport.authenticate(nconf.get('server:auth'), { session : false })
-  var router = express.Router()  var handler = new rate.Memory.MemoryRateHandler()  var manualLimit = rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:manual'), setHeaders: true})  // Create endpoint handlers for /users  router.route('/users')  .post(manualLimit, userController.postUsers)  .get(manualLimit, requireAuth, userController.getUsers)  return router}
+  var adminAuth
+  if (nconf.get('server:auth') === 'digest') {
+    adminAuth = passport.authenticate('digest-admin', { session : false })
+  }
+  else if (nconf.get('server:auth') === 'basic') {
+    adminAuth = passport.authenticate('basic', { session : false })
+  }
+  else {    console.error('unrecognized auth')  }  var router = express.Router()  var handler = new rate.Memory.MemoryRateHandler()  var manualLimit = rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:manual'), setHeaders: true})  // Create endpoint handlers for /users  router.route('/users')  .post(manualLimit, userController.postUsers)  .get(manualLimit, adminAuth, userController.getUsers)  return router}

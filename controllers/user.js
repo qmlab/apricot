@@ -1,7 +1,6 @@
 // Load required packages
 var User = require('../models/user');
 
-// Create endpoint /users for POST
 exports.postUsers = function(req, res, next) {
   var user = new User({
     username: req.body.username,
@@ -13,13 +12,16 @@ exports.postUsers = function(req, res, next) {
       res.send(e)
     }
     else {
-      res.send({ message: 'New user added' });
+      res.send({
+        user: user.username,
+        adminKey: user.adminKey,
+        apiKey: user.apiKey
+      });
     }
     next()
   })
 }
 
-// Create endpoint /users for GET
 exports.getUsers = function(req, res, next) {
   User.find(function(e, users) {
     if (e) {
@@ -32,4 +34,8 @@ exports.getUsers = function(req, res, next) {
     }
     next()
   })
+}
+
+exports.getUser = function(key, callback) {
+  User.findOne({ $or: [ { adminKey: key }, { apiKey: key } ] }, callback)
 }
