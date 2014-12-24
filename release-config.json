@@ -10,8 +10,8 @@
     "compress": true,
     "port": 20086,
     "baseurl": "/",
-    "auth": "digest",
-    "protocol": "https"
+    "auth": "basic",
+    "protocol": "http"
   },
   "ratelimits": {
     "manual": 1,
