@@ -15,11 +15,16 @@ var bodyParser = require('body-parser')
 , http = require('http')
 , https = require('https')
 
-// Whether this is debug or release
-var isDebug = true
-
 // First consider commandline arguments and environment variables, respectively.
 nconf.argv().env();
+
+// Whether this is debug or release
+var isDebug = false
+
+if (nconf.get('debug')) {
+  console.log('debug mode')
+  isDebug = true
+}
 
 if (!isDebug) {
   // Provide configs for release

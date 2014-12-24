@@ -8,10 +8,10 @@
     "saveUninitialized": true,
     "cookielife": 600000,
     "compress": true,
-    "port": 20086,
+    "port": 443,
     "baseurl": "/",
     "auth": "basic",
-    "protocol": "http"
+    "protocol": "https"
   },
   "ratelimits": {
     "manual": 1,

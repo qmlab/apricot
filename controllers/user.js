@@ -36,6 +36,18 @@ exports.getUsers = function(req, res, next) {
   })
 }
 
+exports.deleteUsers = function(req, res, next) {
+  User.remove(req.body, function(e) {
+    if (e) {
+      res.send(e)
+    }
+    else {
+      res.send({ msg: 'success' })
+    }
+    next()
+  })
+}
+
 exports.getUser = function(key, callback) {
   User.findOne({ $or: [ { adminKey: key }, { apiKey: key } ] }, callback)
 }
