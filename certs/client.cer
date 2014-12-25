@@ -1,0 +1,61 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 286 (0x11e)
+    Signature Algorithm: sha1WithRSAEncryption
+        Issuer: C=US, ST=WA, O=QMLab, CN=Maine Qin
+        Validity
+            Not Before: Dec 25 07:56:30 2014 GMT
+            Not After : Dec 25 07:56:30 2015 GMT
+        Subject: C=US, ST=WA, O=QMLab, CN=Maine Qin
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (1024 bit)
+                Modulus:
+                    00:b6:8a:0c:c2:88:60:ac:fa:c4:7f:3d:50:56:98:
+                    44:b6:b0:7b:d0:cc:44:c5:d3:9b:b6:63:ab:b0:e8:
+                    25:82:35:76:a0:5a:5d:e4:51:77:ea:46:1d:e0:b9:
+                    cd:31:73:aa:74:1b:4e:c7:91:c5:02:b2:fd:f5:d3:
+                    90:98:43:d2:d4:d2:ab:4a:27:e0:84:36:61:ac:3a:
+                    84:6c:5f:d0:07:3f:d5:4c:c4:8f:31:57:4d:9c:fc:
+                    35:fe:d2:90:ad:88:7d:ec:fc:3f:a9:bd:c0:e8:dc:
+                    b1:64:c5:92:bc:52:c1:26:58:10:68:4f:ca:11:e1:
+                    13:8d:63:df:e8:72:62:19:d5
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                OpenSSL Generated Certificate
+            X509v3 Subject Key Identifier: 
+                DF:01:49:C4:1C:B9:4A:26:A6:35:FB:8B:13:49:89:13:3F:DB:70:86
+            X509v3 Authority Key Identifier: 
+                DirName:/C=US/ST=WA/O=QMLab/CN=Maine Qin
+                serial:AF:9B:8C:53:5C:12:09:42
+
+    Signature Algorithm: sha1WithRSAEncryption
+         9e:5a:3c:5e:5c:02:f8:09:2b:87:e8:12:d1:32:51:b3:bb:f9:
+         f0:71:0d:32:fc:33:e4:b2:66:f9:66:97:bc:ab:5a:7f:20:22:
+         8d:ee:02:1d:fc:dc:c9:df:17:dc:a9:ed:80:92:d7:83:b5:47:
+         92:be:25:15:39:6a:d5:42:cc:8a:07:82:c0:c5:ab:79:76:43:
+         79:6a:c9:14:be:ee:df:4f:c6:1e:a3:e7:c1:b7:07:23:33:d8:
+         d0:5c:f3:97:aa:a7:85:a5:98:bd:14:56:dd:c4:8b:90:f0:99:
+         db:85:08:91:33:a2:c4:28:67:1c:28:18:a7:0c:89:1d:ea:a5:
+         6c:79
+-----BEGIN CERTIFICATE-----
+MIICqTCCAhKgAwIBAgICAR4wDQYJKoZIhvcNAQEFBQAwPjELMAkGA1UEBhMCVVMx
+CzAJBgNVBAgMAldBMQ4wDAYDVQQKDAVRTUxhYjESMBAGA1UEAwwJTWFpbmUgUWlu
+MB4XDTE0MTIyNTA3NTYzMFoXDTE1MTIyNTA3NTYzMFowPjELMAkGA1UEBhMCVVMx
+CzAJBgNVBAgMAldBMQ4wDAYDVQQKDAVRTUxhYjESMBAGA1UEAwwJTWFpbmUgUWlu
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2igzCiGCs+sR/PVBWmES2sHvQ
+zETF05u2Y6uw6CWCNXagWl3kUXfqRh3guc0xc6p0G07HkcUCsv3105CYQ9LU0qtK
+J+CENmGsOoRsX9AHP9VMxI8xV02c/DX+0pCtiH3s/D+pvcDo3LFkxZK8UsEmWBBo
+T8oR4RONY9/ocmIZ1QIDAQABo4G1MIGyMAkGA1UdEwQCMAAwLAYJYIZIAYb4QgEN
+BB8WHU9wZW5TU0wgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBTfAUnE
+HLlKJqY1+4sTSYkTP9twhjBYBgNVHSMEUTBPoUKkQDA+MQswCQYDVQQGEwJVUzEL
+MAkGA1UECAwCV0ExDjAMBgNVBAoMBVFNTGFiMRIwEAYDVQQDDAlNYWluZSBRaW6C
+CQCvm4xTXBIJQjANBgkqhkiG9w0BAQUFAAOBgQCeWjxeXAL4CSuH6BLRMlGzu/nw
+cQ0y/DPksmb5Zpe8q1p/ICKN7gId/NzJ3xfcqe2AkteDtUeSviUVOWrVQsyKB4LA
+xat5dkN5askUvu7fT8Yeo+fBtwcjM9jQXPOXqqeFpZi9FFbdxIuQ8JnbhQiRM6LE
+KGccKBinDIkd6qVseQ==
+-----END CERTIFICATE-----
