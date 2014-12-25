@@ -11,7 +11,7 @@
     "port": 10086,
     "baseurl": "/",
     "auth": "basic",
-    "protocol": "http"
+    "protocol": "https"
   },
   "ratelimits": {
     "manual": 3,
