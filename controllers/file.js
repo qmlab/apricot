@@ -49,8 +49,7 @@ module.exports.readFile = function(req, res, next) {
 
   //error handling, e.g. file does not exist
   readstream.on('error', function (e) {
-    res.send('An error occurred!', e)
-    throw e
+    res.send('Failed to get file', e)
   })
 
   readstream.pipe(res)
@@ -77,7 +76,6 @@ module.exports.deleteFile = function(req, res, next) {
   }, function (e) {
     if (e) {
       res.send({ msg: 'error' })
-      throw e
     }
     else {
       res.send({ msg: 'success' })

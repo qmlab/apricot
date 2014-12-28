@@ -5,8 +5,7 @@ var bcrypt = require('bcrypt-nodejs')
 exports.postUser = function(req, res, next) {
   User.findOne( { username: req.body.username }, function(e, user) {
     if (e) {
-      res.send(e)
-      throw e
+      res.send('Failed to add/update user', e)
     }
     if (!user) {
       user = new User({
@@ -48,8 +47,7 @@ exports.postUser = function(req, res, next) {
 exports.postAdmin = function(req, res, next) {
   User.findOne( { username: req.body.username }, function(e, user) {
     if (e) {
-      res.send(e)
-      throw e
+      res.send('Failed to add/update admin', e)
     }
     if (!user) {
       user = new User({
