@@ -14,7 +14,7 @@
     "protocol": "https"
   },
   "ratelimits": {
-    "manual": 1,
+    "manual": 3,
     "cols": 10,
     "col": {
       "post": 100,
