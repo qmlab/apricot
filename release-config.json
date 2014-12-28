@@ -1,6 +1,6 @@
 {
   "app": {
-    "version": "v1.0"
+    "version": "1.0"
   },
   "server": {
     "secret": "ZnJ1aXQgbG92ZXI=",
@@ -10,7 +10,7 @@
     "compress": true,
     "port": 443,
     "baseurl": "/",
-    "auth": "digest",
+    "auth": "basic",
     "protocol": "https"
   },
   "ratelimits": {

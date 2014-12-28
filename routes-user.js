@@ -13,7 +13,7 @@ module.exports = function() {
     userAuth= passport.authenticate('digest-user', { session : false })
   }
   else if (nconf.get('server:auth') === 'basic') {
-    userAuth = passport.authenticate('basic', { session : false })
+    userAuth = passport.authenticate('basic-user', { session : false })
   }
   else {
     console.error('unrecognized auth')

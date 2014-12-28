@@ -11,6 +11,6 @@ module.exports = function() {
     adminAuth = passport.authenticate('digest-admin', { session : false })
   }
   else if (nconf.get('server:auth') === 'basic') {
-    adminAuth = passport.authenticate('basic', { session : false })
+    adminAuth = passport.authenticate('basic-admin', { session : false })
   }
-  else {    console.error('unrecognized auth')  }  var router = express.Router()  var handler = new rate.Memory.MemoryRateHandler()  var manualLimit = rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:manual'), setHeaders: true})  // Create endpoint handlers for /users  router.route('/users')  .post(manualLimit, userController.postUsers)  .get(manualLimit, adminAuth, userController.getUsers)  .delete(manualLimit, adminAuth, userController.deleteUsers)  return router}
+  else {    console.error('unrecognized auth')  }  var router = express.Router()  var handler = new rate.Memory.MemoryRateHandler()  var manualLimit = rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:manual'), setHeaders: true})  // Create endpoint handlers for /users  router.route('/users')  .post(manualLimit, adminAuth, userController.postUser)  .put(manualLimit, adminAuth, userController.postUser)  .get(manualLimit, adminAuth, userController.getUsers)  .delete(manualLimit, adminAuth, userController.deleteUsers)  // Create endpoint handlers for /admin  router.route('/admins')  .post(manualLimit, userController.postAdmin)  .put(manualLimit, adminAuth, userController.postAdmin)  .get(manualLimit, adminAuth, userController.getAdmins)  .delete(manualLimit, adminAuth, userController.deleteUsers)  return router}
