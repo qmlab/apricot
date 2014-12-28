@@ -1,5 +1,3 @@
-var mongoskin = require('mongoskin')
-
 module.exports.usage = function(req, res, next) {
   res.send(util.usage())
   next()
@@ -29,7 +27,7 @@ module.exports.getDocs = function(req, res, next) {
     limit: max,
     sort: [[sort, order]]
   }
-  
+
   req.collection.find(req.body, options).toArray(function(e, results){
     res.send(results)
     next()

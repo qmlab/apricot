@@ -2,8 +2,9 @@ var query = require('./controllers/query.js')
 , command = require('./controllers/command.js')
 , userController = require('./controllers/user.js')
 , authController = require('./controllers/auth.js')
+, fileController = require('./controllers/file.js')
 , passport = require('passport')
-, mongoskin = require('mongoskin')
+, mongo = require('mongodb')
 , rate = require('express-rate')
 
 module.exports = function() {
@@ -22,9 +23,17 @@ module.exports = function() {
 
   router.all('*', userAuth, function(req, res, next) {
     if (req.user) {
-      req.db = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {safe:true})
+      mongoClient = mongo.MongoClient
+      mongoClient.connect(nconf.get('db:mongourl') + '-' + req.user.username, function(err, db) {
+        if(!err) {
+          req.db = db
+      }
+        else {
+          console.error(err)
+        }
+        next()
+      });
     }
-    next()
   })
 
   router.param('colName', function(req, res, next, collectionName){
@@ -54,6 +63,20 @@ module.exports = function() {
   .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:col:post'), setHeaders: true}), command.createCollection)
   .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:col:delete'), setHeaders: true}), command.deleteCollection)
   .put(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:col:put'), setHeaders: true}), command.renameCollection)
+
+  // File operations
+  // GET - list all files in the collection
+  router.route('/col/:colName/files')
+  .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:get'), setHeaders: true}), fileController.listFiles)
+
+  // Single-file operations
+  // GET - download a file
+  // POST - upload a file
+  // DELETE - delete a file
+  router.route('/col/:colName/file/:fileName')
+  .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:get'), setHeaders: true}), fileController.readFile)
+  .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:post'), setHeaders: true}), fileController.writeFile)
+  .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:delete'), setHeaders: true}), fileController.deleteFile)
 
   // Multi-doc operations
   // GET - get docs

@@ -3,7 +3,6 @@ var query = require('./controllers/query.js')
 , userController = require('./controllers/user.js')
 , authController = require('./controllers/auth.js')
 , passport = require('passport')
-, mongoskin = require('mongoskin')
 , rate = require('express-rate')
 
 module.exports = function() {

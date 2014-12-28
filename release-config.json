@@ -10,8 +10,8 @@
     "compress": true,
     "port": 443,
     "baseurl": "/",
-    "auth": "basic",
-    "protocol": "http"
+    "auth": "digest",
+    "protocol": "https"
   },
   "ratelimits": {
     "manual": 1,
@@ -39,6 +39,11 @@
     "agg": {
       "get": 200,
       "post": 200
+    },
+    "file": {
+      "get": 100,
+      "post": 20,
+      "delete": 100
     }
   },
   "db": {

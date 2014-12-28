@@ -11,7 +11,7 @@
     "port": 10086,
     "baseurl": "/",
     "auth": "basic",
-    "protocol": "https"
+    "protocol": "http"
   },
   "ratelimits": {
     "manual": 3,
@@ -39,6 +39,11 @@
     "agg": {
       "get": 200,
       "post": 200
+    },
+    "file": {
+      "get": 100,
+      "post": 20,
+      "delete": 100
     }
   },
   "db": {
