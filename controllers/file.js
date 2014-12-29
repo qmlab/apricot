@@ -56,8 +56,17 @@ module.exports.readFile = function(req, res, next) {
 }
 
 module.exports.listFiles = function(req, res, next) {
+  var start = util.getStart(req.query.page, req.query.per_page)
+  var max =  parseInt(req.query.per_page)
+  var sort = (req.query.orderby) ? req.query.orderby : '_id'
+  var order = (req.query.desc) ? -1 : 1
+  var options = {
+    skip: start,
+    limit: max,
+    sort: [[sort, order]]
+  }
   var gfs = Grid(req.db, mongo)
-  gfs.collection(req.collection.collectionName).find(req.body).toArray(function (e, files) {
+  gfs.collection(req.collection.collectionName).find(req.body, options).toArray(function (e, files) {
     if (e) {
       res.send(e)
     }
