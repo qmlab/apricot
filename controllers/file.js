@@ -57,7 +57,6 @@ module.exports.readFile = function(req, res, next) {
 
 module.exports.listFiles = function(req, res, next) {
   var gfs = Grid(req.db, mongo)
-  console.log(req.body)
   gfs.collection(req.collection.collectionName).find(req.body).toArray(function (e, files) {
     if (e) {
       res.send(e)
