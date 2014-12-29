@@ -5,7 +5,7 @@ To run the server:
 
 Usage:
 {
-   "/" : "help",
+    "/" : "help",
     "/cols[?page={num_of_pages}][&per_page={records_per_page}]" : {
       "get" : "Show all collections"
     },
@@ -15,7 +15,8 @@ Usage:
       "put" : "rename collection"
     },
     "/col/{collection_name}/files" : {
-      "get" : "get metadata of all files in the collection"
+      "get" : "get metadata of all files in the collection",
+      "post" : "query metadata of all files in the collection"
     },
     "/col/{collection_name}/file/{file_name}" : {
       "post" : "upload file (overwrite)",
@@ -31,6 +32,7 @@ Usage:
     },
     "/col/{collection_name}/doc/{document_id}" : {
       "get" : "find doc by Id",
+      "post" : "insert doc by Id",
       "put" : "replace entire doc by Id",
       "delete" : "delete doc by Id"
     },
