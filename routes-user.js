@@ -53,21 +53,21 @@ module.exports = function() {
   .all(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:manual'), setHeaders: true}), query.usage)
 
   // Show all collections
-  router.route('/cols')
+  router.route('/sets')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:cols'), setHeaders: true}), query.getCollections)
 
   // Collection operations
   // POST - create collection
   // DELETE - delete collection
   // PUT - rename collection
-  router.route('/col/:colName')
+  router.route('/set/:colName')
   .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:col:post'), setHeaders: true}), command.createCollection)
   .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:col:delete'), setHeaders: true}), command.deleteCollection)
   .put(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:col:put'), setHeaders: true}), command.renameCollection)
 
   // File operations
   // GET - list all files in the collection
-  router.route('/col/:colName/files')
+  router.route('/set/:colName/files')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:files:get'), setHeaders: true}), fileController.listFiles)
   .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:files:post'), setHeaders: true}), fileController.listFiles)
 
@@ -75,7 +75,7 @@ module.exports = function() {
   // GET - download a file
   // POST - upload a file
   // DELETE - delete a file
-  router.route('/col/:colName/file/:fileName')
+  router.route('/set/:colName/file/:fileName')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:get'), setHeaders: true}), fileController.readFile)
   .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:post'), setHeaders: true}), fileController.writeFile)
   .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:delete'), setHeaders: true}), fileController.deleteFile)
@@ -86,7 +86,7 @@ module.exports = function() {
   // PUT - insert docs
   // PATCH - partially update docs. req.body[0] is search pattern and req.body[1] is patching action
   // DELETE - delete docs. (optionally by a query as req.body)
-  router.route('/col/:colName/docs')
+  router.route('/set/:colName/items')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:get'), setHeaders: true}), query.getDocs)
   .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:get'), setHeaders: true}), query.getDocs)
   .put(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:post'), setHeaders: true}), command.insertDocs)
@@ -97,14 +97,14 @@ module.exports = function() {
   // GET - find doc by Id
   // PUT - replace entire doc by Id
   // DELETE - delete doc by Id
-  router.route('/col/:colName/doc/:id')
+  router.route('/set/:colName/item/:id')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:get'), setHeaders: true}), query.findById)
-  //.post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:post'), setHeaders: true}), command.insertById)
+  .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:post'), setHeaders: true}), command.insertById)
   .put(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:put'), setHeaders: true}), command.updateById)
   .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:delete'), setHeaders: true}), command.deleteById)
 
   // Get the next record(s) for the query
-  router.route('/col/:colName/next')
+  router.route('/set/:colName/next')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:next:get'), setHeaders: true}), query.getNext)
   .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:next:post'), setHeaders: true}), query.getNext)
 
@@ -118,29 +118,29 @@ module.exports = function() {
   // Count the number of documents (optionally groupby a category)
   // GET - get count of all documents in a collection
   // POST - get the count of the query results
-  router.route('/col/:colName/count')
+  router.route('/set/:colName/count')
   .get(aggGetRateLimit, query.count)
   .post(aggPostRateLimit, query.count)
 
   // Get the max/min of a property (optionally groupby a category)
   // GET - calculate upon all docs
   // POST - calculate upon the query results
-  router.route('/col/:colName/max')
+  router.route('/set/:colName/max')
   .get(aggGetRateLimit, query.max)
   .post(aggPostRateLimit, query.max)
 
-  router.route('/col/:colName/min')
+  router.route('/set/:colName/min')
   .get(aggGetRateLimit, query.min)
   .post(aggPostRateLimit, query.min)
 
   // Get the sum/avg the field of documents (optionally groupby a category)
   // GET - calculate upon all docs
   // POST - calculate upon the query results
-  router.route('/col/:colName/sum')
+  router.route('/set/:colName/sum')
   .get(aggGetRateLimit, query.sum)
   .post(aggPostRateLimit, query.sum)
 
-  router.route('/col/:colName/avg')
+  router.route('/set/:colName/avg')
   .get(aggGetRateLimit, query.avg)
   .post(aggPostRateLimit, query.avg)
 
