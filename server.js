@@ -45,7 +45,9 @@ var app = express()
 app.use(bodyParser.urlencoded({
   extended: true
 }))
-app.use(bodyParser.json())
+app.use(bodyParser.json({
+  reviver: util.reviveDates
+}))
 
 // Init session management(only for iterations)
 app.use(session({

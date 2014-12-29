@@ -69,6 +69,7 @@ module.exports = function() {
   // GET - list all files in the collection
   router.route('/col/:colName/files')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:files:get'), setHeaders: true}), fileController.listFiles)
+  .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:files:post'), setHeaders: true}), fileController.listFiles)
 
   // Single-file operations
   // GET - download a file
