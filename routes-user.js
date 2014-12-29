@@ -6,6 +6,7 @@ var query = require('./controllers/query.js')
 , passport = require('passport')
 , mongo = require('mongodb')
 , rate = require('express-rate')
+, mongoskin = require('mongoskin')
 
 module.exports = function() {
   var userAuth
@@ -37,7 +38,7 @@ module.exports = function() {
   })
 
   router.param('colName', function(req, res, next, collectionName){
-    req.collection = req.db.collection(collectionName)
+    req.collection = mongoskin.db(nconf.get('db:mongourl') + '-' + req.user.username, {native_parser:true}).collection(collectionName)
     next()
   })
 
@@ -67,7 +68,7 @@ module.exports = function() {
   // File operations
   // GET - list all files in the collection
   router.route('/col/:colName/files')
-  .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:file:get'), setHeaders: true}), fileController.listFiles)
+  .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:files:get'), setHeaders: true}), fileController.listFiles)
 
   // Single-file operations
   // GET - download a file
@@ -97,6 +98,7 @@ module.exports = function() {
   // DELETE - delete doc by Id
   router.route('/col/:colName/doc/:id')
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:get'), setHeaders: true}), query.findById)
+  //.post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:post'), setHeaders: true}), command.insertById)
   .put(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:put'), setHeaders: true}), command.updateById)
   .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:doc:delete'), setHeaders: true}), command.deleteById)
 
