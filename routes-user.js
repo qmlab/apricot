@@ -56,7 +56,7 @@ module.exports = function() {
 
   // Show usage
   router.route('/')
-  .all(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:manual'), setHeaders: true}), readAuth, query.usage)
+  .all(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:manual'), setHeaders: true}), query.usage)
 
   // Show all collections
   router.route('/sets')
