@@ -25,18 +25,23 @@ exports.postUser = function(req, res, next) {
         user.password = hash;
         bcrypt.hash(user.username + '+' + 'monkey', salt, null, function(err, hash) {
           if (err) return callback(err);
-          user.apiKey = hash;
-          user.save(function(e) {
-            if (e) {
-              res.send(e)
-            }
-            else {
-              res.send({
-                user: user.username,
-                apiKey: user.apiKey
-              });
-            }
-            next()
+          user.readKey = hash;
+          bcrypt.hash(user.username + '+' + 'snake', salt, null, function(err, hash) {
+            if (err) return callback(err);
+            user.writeKey = hash;
+            user.save(function(e) {
+              if (e) {
+                res.send(e)
+              }
+              else {
+                res.send({
+                  user: user.username,
+                  readKey: user.readKey,
+                  writeKey: user.writeKey,
+                });
+              }
+              next()
+            })
           })
         })
       })
@@ -68,22 +73,21 @@ exports.postAdmin = function(req, res, next) {
         bcrypt.hash(user.username + '+' + 'panda', salt, null, function(err, hash) {
           if (err) return callback(err);
           user.adminKey = hash;
-          bcrypt.hash(user.username + '+' + 'tiger', salt, null, function(err, hash) {
-            if (err) return callback(err);
-            user.apiKey = hash;
-            user.save(function(e) {
-              if (e) {
-                res.send(e)
-              }
-              else {
-                res.send({
-                  user: user.username,
-                  adminKey: user.adminKey,
-                  apiKey: user.apiKey
-                });
-              }
-              next()
-            })
+          user.readKey = hash;
+          user.writeKey = hash;
+          user.save(function(e) {
+            if (e) {
+              res.send(e)
+            }
+            else {
+              res.send({
+                user: user.username,
+                adminKey: user.adminKey,
+                readKey: user.readKey,
+                writeKey: user.writeKey
+              });
+            }
+            next()
           })
         })
       })
@@ -132,5 +136,5 @@ exports.deleteUsers = function(req, res, next) {
 }
 
 exports.getUser = function(key, callback) {
-  User.findOne({ $or: [ { adminKey: key }, { apiKey: key } ] }, callback)
+  User.findOne({ $or: [ { adminKey: key }, { readKey: key }, { writeKey: key } ] }, callback)
 }

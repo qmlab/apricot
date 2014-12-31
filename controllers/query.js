@@ -45,7 +45,6 @@ module.exports.getPlaces = function(req, res, next) {
     sort: [[sort, order]]
   }
 
-console.log(req.body)
   req.collection.find({$and:[req.body, {"loc": {"$exists": true}}]}, options).toArray(function(e, results){
     res.send(results)
     next()

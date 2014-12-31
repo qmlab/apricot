@@ -16,7 +16,10 @@ var UserSchema = new mongoose.Schema({
   adminKey: {
     type: String
   },
-  apiKey: {
+  readKey: {
+    type: String
+  },
+  writeKey: {
     type: String
   },
 });
