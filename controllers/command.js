@@ -10,6 +10,25 @@ module.exports.insertDocs = function(req, res, next) {
   })
 }
 
+module.exports.insertPlaces = function(req, res, next) {
+  req.collection.ensureIndex( {loc: '2dsphere'}, {}, function(e) {
+    if (e) {
+      res.send("Failed to insert locations", e)
+    }
+    else {
+      req.collection.insert(req.body, {}, function(e, results){
+        if (e) {
+          res.send("Failed to insert locations", e)
+        }
+        else {
+          res.send(results)
+        }
+        next()
+      })
+    }
+  })
+}
+
 module.exports.insertById = function(req, res, next) {
   var obj = req.body
   obj._id = req.params.id
@@ -96,8 +115,32 @@ module.exports.patchDocs = function(req, res, next) {
   })
 }
 
+module.exports.patchPlaces = function(req, res, next) {
+  req.collection.update({$and:[req.body[0], {"loc": {"$exists": true}}]}, {$set:req.body[1]}, {safe:true, multi:true}, function(e, result){
+    if (e) {
+      res.send("Failed to patch docs", e)
+    }
+    else {
+      res.send((result===1)?{msg:'success'}:{msg:'error'})
+    }
+    next()
+  })
+}
+
 module.exports.deleteDocs = function(req, res, next) {
   req.collection.remove(req.body, function(e, result){
+    if (e) {
+      res.send("Failed to delete docs", e)
+    }
+    else {
+      res.send((!e)?{msg:'success'}:{msg:'error'})
+    }
+    next()
+  })
+}
+
+module.exports.deletePlaces = function(req, res, next) {
+  req.collection.remove({$and:[req.body, {"loc": {"$exists": true}}]}, function(e, result){
     if (e) {
       res.send("Failed to delete docs", e)
     }

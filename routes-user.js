@@ -108,6 +108,17 @@ module.exports = function() {
   .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:next:get'), setHeaders: true}), query.getNext)
   .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:next:post'), setHeaders: true}), query.getNext)
 
+  // Geo-location operations
+  // GET - get all locations
+  // POST - query locations
+  // PUT - insert locations
+  router.route('/set/:colName/places')
+  .get(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:get'), setHeaders: true}), query.getPlaces)
+  .post(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:get'), setHeaders: true}), query.getPlaces)
+  .put(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:post'), setHeaders: true}), command.insertPlaces)
+  .patch(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:patch'), setHeaders: true}), command.patchPlaces)
+  .delete(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:docs:delete'), setHeaders: true}), command.deletePlaces)
+
   // Reset the cursor for the session
   router.route('/reset')
   .all(rate.middleware({handler: handler, interval: 1, limit: nconf.get('ratelimits:next:post'), setHeaders: true}), query.reset)

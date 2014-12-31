@@ -36,6 +36,13 @@ Usage:
       "put" : "replace entire item by Id",
       "delete" : "delete item by Id"
     },
+    "/set/{set_name}/places[?page={num_of_pages}][&per_page={records_per_page}][&orderby={sortkey}][&{desc=1|asc=1}]" : {
+      "get" : "get locations",
+      "post" : "query locations (e.g. Get locations within N meters from a coordinate {'loc':{'$near':{'$geometry':{'type': 'Point', 'coordinates': [ -122.1667, 47.6 ] }, '$maxDistance':10000}}})",
+      "put" : "insert locations (must contain 'loc' with 'type' of 'Point': e.g.'loc':{'type': 'Point', 'coordinates': [ -123.1, 49.25 ] })",
+      "patch" : "partially update locations. req.body[0] is search pattern and req.body[1] is patching action",
+      "delete" : "delete places. (optionally by a query as req.body)"
+    },
     "/set/{set_name}/next[?page={num_of_pages}][&per_page={records_per_page}][&orderby={sortkey}][&{desc=1|asc=1}]" : {
       "get" : "Get the next record(s) (without isolation)",
       "post" : "Get the next record(s) for the query (without isolation)"

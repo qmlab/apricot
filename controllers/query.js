@@ -34,6 +34,24 @@ module.exports.getDocs = function(req, res, next) {
   })
 }
 
+module.exports.getPlaces = function(req, res, next) {
+  var start = util.getStart(req.query.page, req.query.per_page)
+  var max =  parseInt(req.query.per_page)
+  var sort = (req.query.orderby) ? req.query.orderby : '_id'
+  var order = (req.query.desc) ? -1 : 1
+  var options = {
+    skip: start,
+    limit: max,
+    sort: [[sort, order]]
+  }
+
+console.log(req.body)
+  req.collection.find({$and:[req.body, {"loc": {"$exists": true}}]}, options).toArray(function(e, results){
+    res.send(results)
+    next()
+  })
+}
+
 module.exports.getNext = function(req, res, next) {
   var size = 1
   if (req.query.per_page) {
