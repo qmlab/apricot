@@ -116,3 +116,9 @@ npm-debug.log
 nbproject
 .idea
 .node_history
+<<<<<<< HEAD
+=======
+
+certs/*.key
+certs/*.pem
+>>>>>>> b52bc31cc3b0dae77cb7a4df33c5cab3070a63f3

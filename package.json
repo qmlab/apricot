@@ -1,0 +1,27 @@
+{
+  "name": "apricot",
+  "version": "1.0.0",
+  "description": "MBaaS service",
+  "main": "server.js",
+  "author": "QM",
+  "private": true,
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.10.7",
+    "bcrypt-nodejs": "0.0.3",
+    "express-rate": "0.0.1",
+    "body-parser": "1.10.2",
+    "nconf": "0.7.1",
+    "compression": "1.3.0",
+    "express-session": "1.10.3",
+    "gridfs-stream": "1.1.0",
+    "mongodb": "1.4.34",
+    "mongoose": "3.8.25",
+    "mongoskin": "1.4.12",
+    "passport": "0.2.1",
+    "passport-http": "0.2.2"
+  },
+  "scripts": {
+    "start": "node lib/server.js"
+  }
+}
